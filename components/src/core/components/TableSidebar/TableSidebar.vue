@@ -36,15 +36,18 @@
               class="count-container"
               :class="{active: selectedListItem.id === item.id}"
             >
-              <oxd-chip
-                v-if="bubbleVisible"
-                :label="item.count"
-                :tooltip="!isLeftPanelOpen ? item.label : null"
-                flow="right"
-                class="oxd-dropdown-selected-chip"
-                :displayType="item.displayType"
-                :background-color="item.style.backgroundColor"
-                :color="item.style.color"
+              <component
+                  :is="sidePanelIconType"
+                  v-if="bubbleVisible"
+                  :label="item.count"
+                  :tooltip="!isLeftPanelOpen ? item.label : null"
+                  flow="right"
+                  class="oxd-dropdown-selected-chip"
+                  :displayType="item.displayType"
+                  :background-color="item.style.backgroundColor"
+                  :color="item.style.color"
+                  :name="item.iconName"
+                  v-bind="selectListitem"
               />
               <p v-if="isLeftPanelOpen" class="oxd-label">{{ item.label }}</p>
             </div>
@@ -52,11 +55,13 @@
         </ul>
       </slot>
     </div>
-    <oxd-icon-button
-      :name="isLeftPanelOpen ? 'chevron-left' : 'chevron-right'"
-      class="oxd-table-left-panel-toggle-btn"
-      @click="toggleLeftPanel"
-    />
+    <div v-if="toggleIconVisible">
+      <oxd-icon-button
+        :name="isLeftPanelOpen ? 'chevron-left' : 'chevron-right'"
+        class="oxd-table-left-panel-toggle-btn"
+        @click="toggleLeftPanel"
+      />
+    </div>
   </div>
 </template>
 
@@ -65,6 +70,7 @@ import {defineComponent, computed, ref} from 'vue';
 import Chip from '@orangehrm/oxd/core/components/Chip/Chip.vue';
 import Button from '@orangehrm/oxd/core/components/Button/Button.vue';
 import IconButton from '@orangehrm/oxd/core/components/Button/Icon.vue';
+import Icon from "@orangehrm/oxd/core/components/Icon/Icon.vue";
 
 export default defineComponent({
   name: 'oxd-table-filter',
@@ -73,6 +79,7 @@ export default defineComponent({
     'oxd-chip': Chip,
     'oxd-button': Button,
     'oxd-icon-button': IconButton,
+    'oxd-icon': Icon,
   },
 
   props: {
@@ -106,6 +113,14 @@ export default defineComponent({
     },
     selectedListItemId: {
       type: Number,
+    },
+    toggleIconVisible: {
+      type: Boolean,
+      default: true,
+    },
+    sidePanelIconType: {
+      type: String,
+      default: 'oxd-chip',
     },
   },
 
